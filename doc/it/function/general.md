@@ -1,48 +1,37 @@
-## Function Declarations and Expressions
+## Dichiarazioni di funzione ed espressioni funzione
 
-Functions in JavaScript are first class objects. That means they can be 
-passed around like any other value. One common use of this feature is to pass
-an *anonymous function* as a callback to another, possibly an asynchronous function.
+Le funzioni in JavaScript sono oggetti di prima classe. Questo significa che possono essere utilizzati come qualsiasi altro valore. Un utilizzo comune di questa caratteristica consiste nel passare una *funzione anonima* come callback a un'altra funzione, possibilmente asincrona.
 
-### The `function` Declaration
+### La dichiarazione `function`
 
     function foo() {}
 
-The above function gets [hoisted](#function.scopes) before the execution of the
-program starts; thus, it is available *everywhere* in the scope it was
-*defined*, even if called before the actual definition in the source.
+La funzione appena definita viene [hoisted](#function.scopes) prima che l'esecuzione del programma cominci; in questo modo, è disponibile *ovunque* nell'ambito in cui è stata *definita*, persino se viene invocata nel codice sorgente prima della sua effettiva definizione.
 
-    foo(); // Works because foo was created before this code runs
+    foo(); // funziona perché foo viene creata prima di eseguire questa istruzione
     function foo() {}
 
-### The `function` Expression
+### L'espressione `function`
 
     var foo = function() {};
 
-This example assigns the unnamed and *anonymous* function to the variable `foo`. 
+L'esempio seguente assegna una funzione *anonima* alla variabile `foo`. 
 
     foo; // 'undefined'
-    foo(); // this raises a TypeError
+    foo(); // questa istruzione solleva un errore di tipo TypeError
     var foo = function() {};
 
-Due to the fact that `var` is a declaration that hoists the variable name `foo` 
-before the actual execution of the code starts, `foo` is already defined when 
-the script gets executed.
+A causa del fatto che la dichiarazione `var` hoists il nome di variabile `foo` prima che l'effettiva esecuzione del codice abbia inizio, `foo` è già definita quando il programma viene eseguito.
 
-But since assignments only happen at runtime, the value of `foo` will default
-to [undefined](#core.undefined) before the corresponding code is executed.
+Ma dato che le istruzioni di assegnamento avvengono solo a tempo di esecuzione, a `foo` viene assegnato il valore predefinito [undefined](#core.undefined) prima che il corrispondente codice venga eseguito.
 
-### Named Function Expression
+### Espressioni funzione con nome
 
-Another special case is the assignment of named functions.
+Un altro caso particolare è l'assegnamento di funzioni con nome.
 
     var foo = function bar() {
-        bar(); // Works
+        bar(); // funziona
     }
     bar(); // ReferenceError
 
-Here, `bar` is not available in the outer scope, since the function only gets
-assigned to `foo`; however, inside of `bar`, it is available. This is due to 
-how [name resolution](#function.scopes) in JavaScript works, the name of the 
-function is *always* made available in the local scope of the function itself.
-
+In questo caso `bar` non è visibile nell'ambito più esterno, dato che la funzione viene solo assegnata a `foo`, ma all'interno di `bar` quello stesso nome è visibile. Questo è dovuto al modo in cui la [risoluzione dei nomi](#function.scopes) funziona in JavaScript: il nome di una funzione è *sempre* visibile nell'ambito locale della funzione stessa.

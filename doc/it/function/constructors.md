@@ -1,15 +1,10 @@
-## Constructors 
+## Costruttori
 
-Constructors in JavaScript are yet again different from many other languages. Any
-function call that is preceded by the `new` keyword acts as a constructor.
+I costruttori in JavaScript sono ancora una volta differenti rispetto a molti altri linguaggi. Qualsiasi invocazione di funzione che viene preceduta dalla parola chiave `new` agisce come un costruttore.
 
-Inside the constructor - the called function - the value of `this` refers to a 
-newly created object. The [prototype](#object.prototype) of this **new** 
-object is set to the `prototype` of the function object that was invoked as the
-constructor.
+All'interno del costruttore - la funzione invocata - il valore di `this` fa riferimento all'oggetto appena creato. Il [prototipo](#object.prototype) di questo **nuovo** oggetto viene impostato al prototipo dell'oggetto funzione che è stato invocato come costruttore.
 
-If the function that was called has no explicit `return` statement, then it
-implicitly returns the value of `this` - the new object. 
+Se la funzione che è stata invocata non ha una istruzione `return` esplicita, allora restituisce imnplicitamente il valore di `this` - il nuovo oggetto.
 
     function Foo() {
         this.bla = 1;
@@ -21,16 +16,14 @@ implicitly returns the value of `this` - the new object.
 
     var test = new Foo();
 
-The above calls `Foo` as constructor and sets the `prototype` of the newly
-created object to `Foo.prototype`.
+Questo esempio invoca `Foo` come costruttore e imposta la proprietà `prototype` dell'oggetto appena creato a `Foo.prototype`.
 
-In case of an explicit `return` statement, the function returns the value 
-specified by that statement, but **only** if the return value is an `Object`.
+In caso di una istruzione `return` esplicita, la funzione restituisce il valore specificato da quella istruzione, ma **solo** se il valore di ritorno è di tipo `Object`.
 
     function Bar() {
         return 2;
     }
-    new Bar(); // a new object
+    new Bar(); // un nuovo oggetto
 
     function Test() {
         this.value = 2;
@@ -39,23 +32,20 @@ specified by that statement, but **only** if the return value is an `Object`.
             foo: 1
         };
     }
-    new Test(); // the returned object
+    new Test(); // l'oggetto restituito
 
-When the `new` keyword is omitted, the function will **not** return a new object. 
+Quando la parola chiave `new` viene omessa, la funzione **non** restituisce un nuovo oggetto.
 
     function Foo() {
-        this.bla = 1; // gets set on the global object
+        this.bla = 1; // viene impostata sull'oggetto globale
     }
     Foo(); // undefined
 
-While the above example might still appear to work in some cases, due to the 
-workings of [`this`](#function.this) in JavaScript, it will use the 
-*global object* as the value of `this`.
+Sebbene questo esempio possa apparire funzionante in certi casi, a causa del funzionamento di [`this`](#function.this) in JavaScript, userà l'*oggetto globale* come valore di `this`.
 
-### Factories
+### Factory
 
-In order to be able to omit the `new` keyword, the constructor function has to 
-explicitly return a value.
+Per poter omettere la parola chiave `new`, la funzione costruttore deve restituire esplicitamente un valore.
 
     function Bar() {
         var value = 1;
@@ -72,25 +62,17 @@ explicitly return a value.
     new Bar();
     Bar();
 
-Both calls to `Bar` return the same thing, a newly create object that
-has a property called `method`, which is a 
-[Closure](#function.closures).
+Entrambe le invocazioni di `Bar` restituiscono la stessa cosa: un nuovo oggetto con una proprietà chiamata `method` che è una [chiusura](#function.closures).
 
-It should also be noted that the call `new Bar()` does **not** affect the
-prototype of the returned object. While the prototype will be set on the newly
-created object, `Bar` never returns that new object.
+Va sottolineato che l'istruzione `new Bar()` **non** modifica il prototipo dell'oggetto restituito. Sebbene il prototipo dell'oggetto creato venga modificato, la funzione `Bar` non restituisce mai quell'oggetto.
 
-In the above example, there is no functional difference between using and
-not using the `new` keyword.
+In questo esempio, quindi, non c'è alcuna differenza funzionale tra l'uso e l'omissione della parola chiave `new`.
 
+### Creare nuovi oggetti attraverso le factory
 
-### Creating New Objects via Factories
+Spesso si raccomanda di **non** usare `new` perché dimenticarla può condurre a errori.
 
-It is often recommended to **not** use `new` because forgetting its use may
-lead to bugs.
-
-In order to create a new object, one should rather use a factory and construct a 
-new object inside of that factory.
+Per creare un nuovo oggetto, si dovrebbe piuttosto usare una factory e costruire un nuovo oggetto all'interno di quella factory.
 
     function Foo() {
         var obj = {};
@@ -107,22 +89,12 @@ new object inside of that factory.
         return obj;
     }
 
-While the above is robust against a missing `new` keyword and certainly makes 
-the use of [private variables](#function.closures) easier, it comes with some 
-downsides.
+Sebbene questo esempio sia robusto contro una parola chiave `new` mancante e certamente renda più semplice l'uso delle [variabili private](#function.closures), presenta anche alcuni aspetti negativi.
 
- 1. It uses more memory since the created objects do **not** share the methods
-    on a prototype.
- 2. In order to inherit, the factory needs to copy all the methods from another
-    object or put that object on the prototype of the new object.
- 3. Dropping the prototype chain just because of a left out `new` keyword
-    is contrary to the spirit of the language.
+ 1. Usa più memoria in quanto gli oggetti creati **non** condividono i metodi attraverso un prototipo
+ 2. Per ereditare, è necessario che la factory copi tutti i metodi da un altro oggetto oppure che imposti quell'oggetto come prototipo del nuovo oggetto.
+ 3. Abbandonare la catena di prototipi solo per una parola chiave `new` omessa è contrario allo spirito del linguaggio.
 
-### In Conclusion
+### Conclusione
 
-While omitting the `new` keyword might lead to bugs, it is certainly **not** a
-reason to drop the use of prototypes altogether. In the end it comes down to
-which solution is better suited for the needs of the application. It is
-especially important to choose a specific style of object creation and use it
-**consistently**.
-
+Sebbene l'omissione della parola chiave `new` possa condurre a errori, di certo **non** è una ragione per abbandonare completamente l'uso dei prototipi. Si tratta di capire quale soluzione è più adatta per le esigenze dell'applicazione. È particolarmente importante scegliere uno stile specifico per la creazione degli oggetti e seguirlo in maniera **coerente**.

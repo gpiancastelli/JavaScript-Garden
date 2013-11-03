@@ -1,88 +1,69 @@
-## Scopes and Namespaces
+## Ambiti di visibilità e spazi di nomi
 
-Although JavaScript deals fine with the syntax of two matching curly
-braces for blocks, it does **not** support block scope; hence, all that is left 
-in the language is *function scope*.
+Sebbene JavaScript supporti la sintassi per delimitare un blocco di codice con una coppia di parentesi graffe, ai blocchi non è associato un ambito di visibilità. L'unico ambito di visibilità che rimane nel linguaggio è l'ambito delle *funzioni*.
 
-    function test() { // a scope
-        for(var i = 0; i < 10; i++) { // not a scope
-            // count
+    function test() { // un ambito di visibilità
+        for (var i = 0; i < 10; i++) { // non è un ambito di visibilità
+            // conteggio
         }
         console.log(i); // 10
     }
 
-> **Note:** When not used in an assignment, return statement or as a function 
-> argument, the `{...}` notation will get interpreted as a block statement and 
-> **not** as an object literal. This, in conjunction with 
-> [automatic insertion of semicolons](#core.semicolon), can lead to subtle errors.
+> **Nota:** Quando non viene usata in un assegnamento, in una istruzione `return` o come argomento di una funzione, la notazione `{...}` verrà interpretata come un blocco e **non** come un letterale oggetto. Questo, combinato con [l'inserimento automatico dei punti e virgola](#core.semicolon), può condurre a errori difficili da individuare.
 
-There are also no distinct namespaces in JavaScript, which means that everything 
-gets defined in one *globally shared* namespace.
+JavaScript è anche privo di spazi di nomi distinti, quindi ogni cosa viene definita in un unico spazio di nomi *condiviso globalmente*.
 
-Each time a variable is referenced, JavaScript will traverse upwards through all 
-the scopes until it finds it. In the case that it reaches the global scope and 
-still has not found the requested name, it will raise a `ReferenceError`.
+Ogni volta che si fa riferimento a una variabile, JavaScript attraverserà verso l'alto tutti gli ambiti di visibilità fino a quando non la trova. Nel caso in cui raggiunga l'ambito globale e ancora non riesca a trovare il nome richiesto, solleverà un errore di tipo `ReferenceError`.
 
-### The Bane of Global Variables
+### Il flagello delle variabili globali
 
-    // script A
+    // programma A
     foo = '42';
 
-    // script B
+    // programma B
     var foo = '42'
 
-The above two scripts do **not** have the same effect. Script A defines a 
-variable called `foo` in the *global* scope, and script B defines a `foo` in the
-*current* scope.
+I due programmi di questo esempio **non** hanno lo stesso effetto. Il programma A definisce una variabile di nome `foo` nell'ambito *globale*, mentre il programma B definisce `foo` nell'ambito *corrente*.
 
-Again, that is **not** at all the *same effect*: not using `var` can have major 
-implications.
+L'effetto è **completamente** diverso: l'omissione di `var` può avere importanti implicazioni.
 
-    // global scope
+    // ambito globale
     var foo = 42;
     function test() {
-        // local scope
+        // ambito locale
         foo = 21;
     }
     test();
     foo; // 21
 
-Leaving out the `var` statement inside the function `test` will override the 
-value of `foo`. While this might not seem like a big deal at first, having 
-thousands of lines of JavaScript and not using `var` will introduce horrible,
-hard-to-track-down bugs.
+L'omissione della istruzione `var` all'interno della funzione `test` implica che l'assegnamento sovrascriverà il valore globale di `foo`. Sebbene questo possa non sembrare granché a prima vista, l'omissione di `var` in mezzo a migliaia di righe di codice JavaScript può introdurre errori molto difficili da individuare.
     
-    // global scope
-    var items = [/* some list */];
-    for(var i = 0; i < 10; i++) {
+    // ambito globale
+    var items = [/* una qualche lista */];
+    for (var i = 0; i < 10; i++) {
         subLoop();
     }
 
     function subLoop() {
-        // scope of subLoop
-        for(i = 0; i < 10; i++) { // missing var statement
-            // do amazing stuff!
+        // ambito di subLoop
+        for (i = 0; i < 10; i++) { // omissione di var
+            // fai qualcosa di meraviglioso!
         }
     }
     
-The outer loop will terminate after the first call to `subLoop`,  since `subLoop`
-overwrites the global value of `i`. Using a `var` for the second `for` loop would
-have easily avoided this error. The `var` statement should **never** be left out 
-unless the *desired effect* is to affect the outer scope.
+Il ciclo più esterno terminerà dopo la prima invocazione di `subLoop`, dato che `subLoop` sovrascrive il valore globale di `i`. L'uso di `var` nel secondo ciclo `for` avrebbe facilmente consentito di evitare questo errore. L'istruzione `var` non dovrebbe essere **mai** omessa a meno che l'effetto *desiderato* non sia quello di influenzare l'ambito più esterno.
 
-### Local Variables
+### Variabili locali
 
-The only source for local variables in JavaScript are
-[function](#function.general) parameters and variables declared via the 
-`var` statement.
+Le variabili locali in JavaScript possono presentarsi solamente in forma di parametri di [funzione](#function.general) e di variabili dichiarate tramite l'istruzione `var`.
 
-    // global scope
+    // ambito globale
     var foo = 1;
     var bar = 2;
     var i = 2;
 
     function test(i) {
-        // local scope of the function test
+        // ambito locale della funzione test
         i = 5;
 
         var foo = 3;
@@ -90,13 +71,11 @@ The only source for local variables in JavaScript are
     }
     test(10);
 
-While `foo` and `i` are local variables inside the scope of the function `test`,
-the assignment of `bar` will override the global variable with the same name.
+Mentre `foo` e `i` sono variabili locali all'interno dell'ambito della funzione `test`, l'assegnamento di `bar` sovrascriverà il valore della variabile globale con quello stesso nome.
 
-### Hoisting
+### Innalzamento
 
-JavaScript **hoists** declarations. This means that both `var` statements and
-`function` declarations will be moved to the top of their enclosing scope.
+JavaScript **innalza** le dichiarazioni. Questo significa che sia le istruzioni `var` sia le dichiarazioni di funzione verranno spostate in cima all'ambito che le racchiude.
 
     bar();
     var bar = function() {};
@@ -106,128 +85,105 @@ JavaScript **hoists** declarations. This means that both `var` statements and
     function test(data) {
         if (false) {
             goo = 1;
-
         } else {
             var goo = 2;
         }
-        for(var i = 0; i < 100; i++) {
+        for (var i = 0; i < 100; i++) {
             var e = data[i];
         }
     }
 
-The above code gets transformed before execution starts. JavaScript moves
-the `var` statements, as well as `function` declarations, to the top of the 
-nearest surrounding scope.
+Questo codice viene trasformato prima che l'esecuzione cominci. JavaScript sposta le istruzioni `var` e le dichiarazioni di funzione in cima al più vicino ambito che le racchiude.
 
-    // var statements got moved here
-    var bar, someValue; // default to 'undefined'
+    // le istruzioni var vengono spostate qui
+    var bar, someValue; // il loro valore predefinito è 'undefined'
 
-    // the function declaration got moved up too
+    // anche la dichiarazione di funzione è stata spostata in alto
     function test(data) {
-        var goo, i, e; // missing block scope moves these here
+        var goo, i, e; // spostate perché ai blocchi non è associato un ambito
         if (false) {
             goo = 1;
-
         } else {
             goo = 2;
         }
-        for(i = 0; i < 100; i++) {
+        for (i = 0; i < 100; i++) {
             e = data[i];
         }
     }
 
-    bar(); // fails with a TypeError since bar is still 'undefined'
-    someValue = 42; // assignments are not affected by hoisting
+    bar(); // genera un TypeError dato che bar è ancora 'undefined'
+    someValue = 42; // gli assegnamenti non vengono spostati
     bar = function() {};
 
     test();
 
-Missing block scoping will not only move `var` statements out of loops and
-their bodies, it will also make the results of certain `if` constructs 
-non-intuitive.
+La mancanza di un ambito associato ai blocchi non solo provocherà lo spostamento delle istruzioni `var` al di fuori dei cicli e dei loro corpi, ma renderà anche il risultato di certi costrutti `if` poco intuitivo.
 
-In the original code, although the `if` statement seemed to modify the *global 
-variable* `goo`, it actually modifies the *local variable* - after hoisting 
-has been applied.
+Nel codice originale, sebbene l'istruzione `if` sembrasse modificare la *variabile globale* `goo`, in realtà modifica la *variabile locale* - dopo che l'innalzamento è stato applicato.
 
-Without knowledge of *hoisting*, one might suspect the code below would raise a
-`ReferenceError`.
+Senza sapere dell'innalzamento, si potrebbe sospettare che il codice seguente sollevi un errore di tipo `ReferenceError`.
 
-    // check whether SomeImportantThing has been initialized
+    // controlla se SomeImportantThing è stato inizializzata
     if (!SomeImportantThing) {
         var SomeImportantThing = {};
     }
 
-But of course, this works due to the fact that the `var` statement is being 
-moved to the top of the *global scope*.
+Ma naturalmente questo funziona a causa del fatto che l'istruzione `var` è stata spostata in cima all'*ambito globale*.
 
     var SomeImportantThing;
 
-    // other code might initialize SomeImportantThing here, or not
+    // altre istruzioni che potrebbero inizializzare SomeImportantThing, o no
 
-    // make sure it's there
+    // assicuriamoci che esista
     if (!SomeImportantThing) {
         SomeImportantThing = {};
     }
 
-### Name Resolution Order
+### L'ordine nella risoluzione dei nomi
 
-All scopes in JavaScript, including the *global scope*, have the special name 
-[`this`](#function.this), defined in them, which refers to the *current object*. 
+Tutti gli ambiti in JavaScript, compreso quello *globale*, contengono la definizione del nome speciale [`this`](#function.this), che fa riferimento all'*oggetto corrente*. 
 
-Function scopes also have the name [`arguments`](#function.arguments), defined in
-them, which contains the arguments that were passed to the function.
+Gli ambiti di funzione contengono anche la definizione del nome [`arguments`](#function.arguments), che contiene gli argomenti passati alla funzione.
 
-For example, when trying to access a variable named `foo` inside the scope of a 
-function, JavaScript will look up the name in the following order:
+Per esempio, quando si prova ad accedere alla variabile di nome `foo` all'interno dell'ambito di una funzione, JavaScript cercherà quel nome nell'ordine seguente:
 
- 1. In case there is a `var foo` statement in the current scope, use that.
- 2. If one of the function parameters is named `foo`, use that.
- 3. If the function itself is called `foo`, use that.
- 4. Go to the next outer scope, and start with **#1** again.
+ 1. Tra le istruzioni `var` (i.e. `var foo`) nel corpo della funzione.
+ 2. Tra i parametri della funzione.
+ 3. Nel nome della funzione (i.e. se la funzione è chiamata `foo`).
+ 4. Nell'ambito di visibilità esterno successivo, ricominciando dal punto **#1**.
 
-> **Note:** Having a parameter called `arguments` will **prevent** the creation 
-> of the default `arguments` object.
+> **Nota:** La presenza di un parametro di una funzione chiamato `arguments` **impedirà** la creazione dell'oggetto `arguments` predefinito.
 
-### Namespaces
+### Spazi di nomi
 
-A common problem associated with having only one global namespace is the
-likelihood of running into problems where variable names clash. In JavaScript,
-this problem can easily be avoided with the help of *anonymous wrappers*.
+Un problema comune associato alla presenza di un unico spazio di nomi globale è la probabilità di incorrere in conflitti tra nomi di variabili uguali. In JavaScript, questo problema si può facilmente evitare con l'aiuto di *involucri anonimi*.
 
     (function() {
-        // a self contained "namespace"
+        // uno "spazio di nomi" autosufficiente
         
         window.foo = function() {
-            // an exposed closure
+            // una chiusura esposta
         };
 
-    })(); // execute the function immediately
+    })(); // esegui la funzione immediatamente
 
+Le funzioni anonime sono considerate [espressioni](#function.general); quindi, per essere invocabili, devono prima essere valutate.
 
-Unnamed functions are considered [expressions](#function.general); so in order to
-being callable, they must first be evaluated.
-
-    ( // evaluate the function inside the parentheses
+    ( // valuta la funzione all'interno delle parentesi
     function() {}
-    ) // and return the function object
-    () // call the result of the evaluation
+    ) // e restituisci l'oggetto funzione
+    () // invoca il risultato della valutazione
 
-There are other ways to evaluate and directly call the function expression
-which, while different in syntax, behave the same way.
+Esistono altri modi di valutare e invocare direttamente l'espressione funzione, che si comporta allo stesso modo pur usando una sintassi differente.
 
-    // A few other styles for directly invoking the 
+    // alcuni altri stili per invocare direttamente una funzione
     !function(){}()
     +function(){}()
     (function(){}());
-    // and so on...
+    // e così via...
 
-### In Conclusion
+### Conclusione
 
-It is recommended to always use an *anonymous wrapper* to encapsulate code in 
-its own namespace. This does not only protect code against name clashes, but it 
-also allows for better modularization of programs.
+Si raccomanda di usre sempre un *involucro anonimo* per incapsulare codice nel proprio spazio di nomi. Questo non solo garantisce di proteggere il codice dai conflitti di nomi, ma consente anche una migliore modularizzazione dei programmi.
 
-Additionally, the use of global variables is considered **bad practice**. **Any**
-use of them indicates badly written code that is prone to errors and hard to maintain.
-
+Inoltre, l'uso di variabili globali è considerato una pratica da **evitare**. **Qualsiasi** loro utilizzo indica codice scritto male che è soggetto a errori e difficile da manutenere.
