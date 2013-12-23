@@ -31,7 +31,7 @@ JavaScript non offre alcuna protezione al nome di proprietà `hasOwnProperty`; q
 
     foo.hasOwnProperty('bar'); // restituisce sempre false
 
-    // È necessario usare la propeità hasOwnProperty di un
+    // È necessario usare la proprietà hasOwnProperty di un
     // altro oggetto e invocarla con this impostato a foo
     ({}).hasOwnProperty.call(foo, 'bar'); // true
 

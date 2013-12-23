@@ -21,7 +21,7 @@ L'esempio seguente assegna una funzione *anonima* alla variabile `foo`.
     foo(); // questa istruzione solleva un errore di tipo TypeError
     var foo = function() {};
 
-A causa del fatto che la dichiarazione `var` hoists il nome di variabile `foo` prima che l'effettiva esecuzione del codice abbia inizio, `foo` è già definita quando il programma viene eseguito.
+A causa del fatto che la dichiarazione `var` hoists il nome di variabile `foo` prima che l'effettiva esecuzione del codice abbia inizio, `foo` è già dichiarata quando il programma viene eseguito.
 
 Ma dato che le istruzioni di assegnamento avvengono solo a tempo di esecuzione, a `foo` viene assegnato il valore predefinito [undefined](#core.undefined) prima che il corrispondente codice venga eseguito.
 

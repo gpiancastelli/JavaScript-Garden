@@ -75,3 +75,8 @@ Esiste un altro modo per poter ottenere questo effetto, che consiste nel restitu
         })(i), 1000)
     }
 
+Ed esiste un altro modo ancora per poter ottenere lo stesso effetto, che consiste nell'invocare il metodo `bind` per legare un contesto di esecuzione `this` e una serie di argomenti a una funzione. Il comportamento è identico a quello del codice precedente.
+
+    for (var i = 0; i < 10; i++) {
+        setTimeout(console.log.bind(console, i), 1000);
+    }
