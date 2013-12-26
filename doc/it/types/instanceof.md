@@ -1,10 +1,8 @@
-## The `instanceof` Operator
+## L'operatore `instanceof`
 
-The `instanceof` operator compares the constructors of its two operands. It is 
-only useful when comparing custom made objects. Used on built-in types, it is
-nearly as useless as the [typeof operator](#types.typeof).
+L'operatore `instanceof` confronta i costruttori dei suoi due operandi. È utile solamente quando si confrontano due oggetti personalizzati. Usato sui tipi predefiniti è quasi inutile quanto [l'operatore `typeof`](#types.typeof).
 
-### Comparing Custom Objects
+### Confrontare oggetti personalizzati
 
     function Foo() {}
     function Bar() {}
@@ -13,12 +11,12 @@ nearly as useless as the [typeof operator](#types.typeof).
     new Bar() instanceof Bar; // true
     new Bar() instanceof Foo; // true
 
-    // This just sets Bar.prototype to the function object Foo,
-    // but not to an actual instance of Foo
+    // La riga seguente imposta il valore di Bar.prototype all'oggetto
+    // funzione Foo, non a una istanza di Foo
     Bar.prototype = Foo;
     new Bar() instanceof Foo; // false
 
-### Using `instanceof` with Native Types
+### Usare `instanceof` con i tipi predefiniti
 
     new String('foo') instanceof String; // true
     new String('foo') instanceof Object; // true
@@ -26,13 +24,8 @@ nearly as useless as the [typeof operator](#types.typeof).
     'foo' instanceof String; // false
     'foo' instanceof Object; // false
 
-One important thing to note here is that `instanceof` does not work on objects 
-that originate from different JavaScript contexts (e.g. different documents
-in a web browser), since their constructors will not be the exact same object.
+È importante notare che `instanceof` non funziona su oggetti che sono stati creati in contesti differenti (e.g. documenti diversi in un browser web) dato che il loro costruttore non sarà lo stesso identico oggetto.
 
-### In Conclusion
+### Conclusione
 
-The `instanceof` operator should **only** be used when dealing with custom made 
-objects that originate from the same JavaScript context. Just like the
-[`typeof`](#types.typeof) operator, every other use of it should be **avoided**.
-
+L'operatore `instanceof` dovrebbe essere usato **solamente** su oggetti personalizzati che provengono dallo stesso contesto JavaScript. Proprio come l'operatore [`typeof`](#types.typeof), qualsiasi altro uso dovrebbe essere **evitato**.

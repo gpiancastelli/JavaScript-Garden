@@ -1,19 +1,12 @@
-## The `typeof` Operator
+## L'operatore `typeof`
 
-The `typeof` operator (together with 
-[`instanceof`](#types.instanceof)) is probably the biggest 
-design flaw of JavaScript, as it is almost **completely broken**.
+L'operatore `typeof` è quasi **completamente inutilizzabile**, e in quanto tale (insieme all'operatore [`instanceof`](#types.instanceof)) costituisce probabilmente il più grande errore di progettazione del linguaggio JavaScript.
 
-Although `instanceof` still has limited uses, `typeof` really has only one
-practical use case, which does **not** happen to be checking the type of an 
-object. 
+Sebbene `instanceof` abbia ancora usi limitati, `typeof` ha realmente un solo caso d'uso pratico, che capita **non** abbia nulla a che fare con il controllo del tipo di un oggetto.
 
-> **Note:** While `typeof` can also be called with a function like syntax, i.e.
-> `typeof(obj)`, this is not a function call. The parentheses behave as normal
-> and the return value will be used as the operand of the `typeof` operator.
-> There is **no** `typeof` function.
+> **Nota:** Nonostante `typeof` possa anche essere utilizzato con una sintassi simile a quella della invocazione di funzioni, l'espressione `typeof(obj)` non invoca alcuna funzione. Le parentesi assumono il loro usuale comportamento e il valore che restituiscono verrà usato come operando dell'operatore `typeof`. **Non** esiste alcuna funzione `typeof`.
 
-### The JavaScript Type Table
+### La tabella dei tipi di JavaScript
 
     Value               Class      Type
     -------------------------------------
@@ -33,22 +26,17 @@ object.
     {}                  Object     object
     new Object()        Object     object
 
-In the above table, *Type* refers to the value that the `typeof` operator returns.
-As can be clearly seen, this value is anything but consistent.
+Nella tabella precedente, la colonna *Type* si riferisce al valore restituito dall'operatore `typeof`. Come si può chiaramente vedere, tutto si può dire di questi valori tranne che siano coerenti.
 
-The *Class* refers to the value of the internal `[[Class]]` property of an object.
+La colonna *Class* si riferisce al valore della proprietà interna `[[Class]]` di un oggetto.
 
-> **From the Specification:** The value of `[[Class]]` can be one of the
-> following strings. `Arguments`, `Array`, `Boolean`, `Date`, `Error`, 
-> `Function`, `JSON`, `Math`, `Number`, `Object`, `RegExp`, `String`.
+> **Dalla specifica del linguaggio:** Il valore di `[[Class]]` può essere una delle stringhe seguenti: `Arguments`, `Array`, `Boolean`, `Date`, `Error`, `Function`, `JSON`, `Math`, `Number`, `Object`, `RegExp`, `String`.
 
-In order to retrieve the value of `[[Class]]`, one has to make use of the
-`toString` method of `Object.prototype`.
+Per ottenre il valore della proprietà `[[Class]]`, è necessario usare il metodo `toString` di `Object.prototype`.
 
-### The Class of an Object
+### La classe di un oggetto
 
-The specification gives exactly one way of accessing the `[[Class]]` value,
-with the use of `Object.prototype.toString`. 
+La specifica del linguaggio fornisce esattamente un modo per accedere al valore della proprietà `[[Class]]`, tramite l'uso di `Object.prototype.toString`.
 
     function is(type, obj) {
         var clas = Object.prototype.toString.call(obj).slice(8, -1);
@@ -58,29 +46,16 @@ with the use of `Object.prototype.toString`.
     is('String', 'test'); // true
     is('String', new String('test')); // true
 
-In the above example, `Object.prototype.toString` gets called with the value of
-[this](#function.this) being set to the object whose `[[Class]]` value should be 
-retrieved.
+In questo esempio, `Object.prototype.toString` viene invocata con il valore di [this](#function.this) impostato all'oggetto della cui proprietà `[[Class]]` si vuole ottenere il valore.
 
-> **ES5 Note:** For convenience the return value of `Object.prototype.toString` 
-> for both `null` and `undefined` was **changed** from `Object` to `Null` and 
-> `Undefined` in ECMAScript 5.
+> **Nota su ES5:** Per comodità, il valore di ritorno di `Object.prototype.toString`  per `null` e `undefined` è stato **cambiato** da `Object` a `Null` e `Undefined` rispettivamente in ECMAScript 5.
 
-### Testing for Undefined Variables
+### Controllo per le variabili non definite
 
     typeof foo !== 'undefined'
 
-The above will check whether `foo` was actually declared or not; just 
-referencing it would result in a `ReferenceError`. This is the only thing
-`typeof` is actually useful for.
+Questa espressione controlla se la varaibile `foo` è stata effettivamente dichiarata oppure no; il solo atto di farvi riferimento risulterebbe in un errore di tipo `ReferenceError`. Questo è l'unico caso in cui `typeof` ha effettivamente una sua utilità.
 
-### In Conclusion
+### Conclusione
 
-In order to check the type of an object, it is highly recommended to use 
-`Object.prototype.toString` because this is the only reliable way of doing so. 
-As shown in the above type table, some return values of `typeof` are not defined 
-in the specification; thus, they can differ between implementations.
-
-Unless checking whether a variable is defined, `typeof` should be avoided.
-
-
+Per controllare il tipo di un oggetto si raccomanda caldamente di usare `Object.prototype.toString` perché è l'unico modo affidabile di farlo. Come mostrato nella tabella dei tipi più sopra, alcuni valori restituiti da `typeof` non sono definiti nella specifica del linguaggio, e quindi potrebbero differire a seconda delle implementazioni. A meno di non controllare se una variabile è definita, l'operatore `typeof` dovrebbe essere evitato.

@@ -1,44 +1,29 @@
-## Array Iteration and Properties
+## Array: iterazione e proprietà
 
-Although arrays in JavaScript are objects, there are no good reasons to use
-the [`for in`](#object.forinloop) loop. In fact, there 
-are a number of good reasons **against** the use of `for in` on arrays.
+Sebbene gli array in JavaScript siano oggetti, non ci sono buone ragioni per usare il ciclo [`for in`](#object.forinloop). Infatti, ci sono alcune ragioni contro l'utilizzo di `for in` sugli array.
 
-> **Note:** JavaScript arrays are **not** *associative arrays*. JavaScript only 
-> has [objects](#object.general) for mapping keys to values. And while associative 
-> arrays **preserve** order, objects **do not**.
+> **Nota:** Gli array in JavaScript **non** sono *array associativi*. JavaScript usa solamente gli [oggetti](#object.general) per stabilire corrispondenze tra chiavi e valori. E mentre gli array associativi **preservano** l'ordine, gli oggetti **non** lo fanno.
 
-Because the `for in` loop enumerates all the properties that are on the prototype 
-chain and because the only way to exclude those properties is to use 
-[`hasOwnProperty`](#object.hasownproperty), it is already up to **twenty times** 
-slower than a normal `for` loop.
+Dato che ciclo `for in` enumera tutte le proprietà che si trovano sulla catena di prototipi, e dato che l'unico modo per escludere quelle proprietà è di utilizzare [`hasOwnProperty`](#object.hasownproperty), è già fino a **venti volte** più lento di un normale ciclo `for`.
 
-### Iteration
+### Iterazione
 
-In order to achieve the best performance when iterating over arrays, it is best
-to use the classic `for` loop.
+Allo scopo di ottenere le prestazioni migliori quando si itera sugli array, è meglio usare il classico ciclo `for`.
 
     var list = [1, 2, 3, 4, 5, ...... 100000000];
-    for(var i = 0, l = list.length; i < l; i++) {
+    for (var i = 0, l = list.length; i < l; i++) {
         console.log(list[i]);
     }
 
-There is one extra catch in the above example, which is the caching of the 
-length of the array via `l = list.length`.
+C'è un trabocchetto aggiuntivo nell'esempio qui sopra, che è la memorizzazione della lunghezza dell'array tramite `l = list.length`.
 
-Although the `length` property is defined on the array itself, there is still an
-overhead for doing the lookup on each iteration of the loop. And while recent 
-JavaScript engines **may** apply optimization in this case, there is no way of
-telling whether the code will run on one of these newer engines or not. 
+Nonostante la proprietà `length` sia definita sull'array stesso, c'è comunque un costo aggiunto dovuto alla esecuzione della ricerca per ogni iterazione del ciclo. E sebbene gli interpreti JavaScript più recenti **possano** applicare ottimizzazioni in questo caso, non c'è modo di sapere se il codice verrà eseguito su uno di questi interpreti più nuovi oppure no.
 
-In fact, leaving out the caching may result in the loop being only **half as
-fast** as with the cached length.
+In effetti, omettere la memorizzazione può risultare in un ciclo più lento del cinquanta per cento rispetto a un ciclo con la memorizzazione della lunghezza.
 
-### The `length` Property
+### La proprietà `length`
 
-While the *getter* of the `length` property simply returns the number of
-elements that are contained in the array, the *setter* can be used to 
-**truncate** the array.
+Mentre l'operazione di recupero della proprietà `length` restituisce semplicemente il numero di elemento che sono contenuti nell'array, l'operazione di impostazione del valore della proprietà può essere usata per **troncare** l'array.
 
     var foo = [1, 2, 3, 4, 5, 6];
     foo.length = 3;
@@ -48,11 +33,8 @@ elements that are contained in the array, the *setter* can be used to
     foo.push(4);
     foo; // [1, 2, 3, undefined, undefined, undefined, 4]
 
-Assigning a smaller length truncates the array. Increasing it creates a sparse array.
+L'assegnamento di una lunghezza più piccola tronca l'array. L'assegnamento di una lunghezza più grande crea un array sparso.
 
-### In Conclusion
+### Conclusione
 
-For the best performance, it is recommended to always use the plain `for` loop
-and cache the `length` property. The use of `for in` on an array is a sign of
-badly written code that is prone to bugs and bad performance. 
-
+Per ottenere le prestazioni migliori si raccomanda di usare sempre il semplice ciclo `for` e di memorizzare la proprietà `length`. L'uso di `for in` su un array è segno di codice scritto male che può essere incline a errori e cattive prestazioni.

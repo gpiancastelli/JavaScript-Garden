@@ -1,13 +1,12 @@
-## Equality and Comparisons
+## Uguaglianza e confronti
 
-JavaScript has two different ways of comparing the values of objects for equality. 
+JavaScript utilizza due modalità differenti per confrontare i valori degli oggetti e verificarne l'uguaglianza. 
 
-### The Equality Operator
+### L'operatore di uguaglianza
 
-The equality operator consists of two equal signs: `==`
+L'operatore di uguaglianza consiste in due segni di uguale: `==`
 
-JavaScript features *weak typing*. This means that the equality operator 
-**coerces** types in order to compare them.
+JavaScript utilizza una *tipizzazione debole*. Questo significa che l'operatore di uguaglianza **converte** forzatamente i tipi allo scopo di poterli confrontare.
     
     ""           ==   "0"           // false
     0            ==   ""            // true
@@ -19,20 +18,15 @@ JavaScript features *weak typing*. This means that the equality operator
     null         ==   undefined     // true
     " \t\r\n"    ==   0             // true
 
-The above table shows the results of the type coercion, and it is the main reason 
-why the use of `==` is widely regarded as bad practice. It introduces
-hard-to-track-down bugs due to its complicated conversion rules.
+La tabella precedente mostra i risultati della conversione di tipo, ed è la ragione principale per cui l'uso di `==` viene largamente considerato una cattiva pratica. Introduce difetti che sono difficili da rintracciare a causa delle sue complicate regole di conversione.
 
-Additionally, there is also a performance impact when type coercion is in play;
-for example, a string has to be converted to a number before it can be compared
-to another number.
+In più la conversione di tipo ha un impatto anche sulle prestazioni; per esempio, una stringa deve essere convertita in numero prima di poter essere confrontata con un altro numero.
 
-### The Strict Equality Operator
+### L'operatore di uguaglianza stretta
 
-The strict equality operator consists of **three** equal signs: `===`.
+L'operatore di uguaglianza stretta consiste in **tre** segni di uguale: `===`.
 
-It works like the normal equality operator, except that strict equality 
-operator does **not** perform type coercion between its operands.
+Funziona come il normale operatore di uguaglianza, a parte il fatto che l'operatore di uguaglianza stretta **non** effettua alcuna conversione forzata di tipo tra i suoi operandi.
 
     ""           ===   "0"           // false
     0            ===   ""            // false
@@ -44,14 +38,11 @@ operator does **not** perform type coercion between its operands.
     null         ===   undefined     // false
     " \t\r\n"    ===   0             // false
 
-The above results are a lot clearer and allow for early breakage of code. This
-hardens code to a certain degree and also gives performance improvements in case
-the operands are of different types.
+I risultati in questa tabella sono molto più chiari e consentono di individuare immediatamente eventuali errori nella scrittura di codice. Questo rende il codice più solido in una certa misura, e offre miglioramenti nelle prestazioni nel caso in cui gli operandi siano di tipo diverso.
 
-### Comparing Objects
+### Confrontare oggetti
 
-While both `==` and `===` are called **equality** operators, they behave 
-differently when at least one of their operands is an `Object`.
+Sebbene entrambi gli operatori `==` e `===` siano detti di **uguaglianza**, si comportano in modo differente quando almeno uno dei loro operandi è una istanza di `Object`.
 
     {} === {};                   // false
     new String('foo') === 'foo'; // false
@@ -59,13 +50,9 @@ differently when at least one of their operands is an `Object`.
     var foo = {};
     foo === foo;                 // true
 
-Here, both operators compare for **identity** and **not** equality; that is, they
-will compare for the same **instance** of the object, much like `is` in Python 
-and pointer comparison in C.
+In questi casi, entrambi gli operatori lavorano sull'**identità** e **non** sull'uguaglianza; cioè, verificano che gli oggetti siano la stessa **istanza**, in modo molto simile all'operatore `is` in Python e al confronto tra puntatori in C.
 
-### In Conclusion
+### Conclusione
 
-It is highly recommended to only use the **strict equality** operator. In cases
-where types need to be coerced, it should be done [explicitly](#types.casting) 
-and not left to the language's complicated coercion rules.
+Si suggerisce caldamente di usare solamente l'operatore di **uguaglianza stretta**. La conversione di tipo, nei casi in cui è necessaria, dovrebbe essere effettuata [in maniera esplicita](#types.casting) anziché essere lasciata alle complicate regole di conversione del linguaggio.
 

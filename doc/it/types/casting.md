@@ -1,63 +1,54 @@
-## Type Casting
+## Conversioni di tipo
 
-JavaScript is a *weakly typed* language, so it will apply *type coercion*
-**wherever** possible.
+JavaScript è un linguaggio *debolmente tipato*, quindi applicherà una *conversione forzata di tipo* **ovunque** sia possibile.
 
-    // These are true
-    new Number(10) == 10; // Number.toString() is converted
-                          // back to a number
+    // Queste uguaglianze restituiscono true
+    new Number(10) == 10; // Number.toString() viene convertito
+                          // di nuovo in numero
 
-    10 == '10';           // Strings gets converted to Number
-    10 == '+10 ';         // More string madness
-    10 == '010';          // And more 
-    isNaN(null) == false; // null converts to 0
-                          // which of course is not NaN
+    10 == '10';           // Le stringhe vengono convertite in numeri
+    10 == '+10 ';         // Altra follia delle stringhe
+    10 == '010';          // E ancora un'altra
+    isNaN(null) == false; // null viene convertito in 0
+                          // che naturalmente non è NaN
     
-    // These are false
+    // Queste uguaglianze restituiscono false
     10 == 010;
     10 == '-10';
 
-> **ES5 Note:** Number literals that start with a `0` are interpreted as octal 
-> (Base 8). Octal support for these has been **removed** in ECMAScript 5 strict 
-> mode.
+> **Nota su ES5:** I letterali numero che cominciano con `0` vengono interpretati come numeri ottali (in base 8). Il supporto per questi numeri è stato **rimosso* dalla modalità strict di ECMAScript 5
 
-To avoid the issues above, use of the [strict equal operator](#types.equality) 
-is **highly** recommended. Although this avoids a lot of common pitfalls, there 
-are still many further issues that arise from JavaScript's weak typing system.
+Per evitare i problemi illustrati, si raccomanda **caldamente** di usare l'[operatore di uguaglianza stretta](#types.equality) . Sebbene questo consenta di evitare un buon numero di trabocchetti comuni, ci sono molti altri problemi dovuti al sistema di tipi deboli di JavaScript.
 
-### Constructors of Built-In Types
+### Costruttori di tipi predefiniti
 
-The constructors of the built in types like `Number` and `String` behave
-differently when being used with the `new` keyword and without it.
+I costruttori di tipi predefiniti come `Number` e `String` si comportano in maniera differente a seconda che vengano usati o meno con la parola chiave `new`.
 
-    new Number(10) === 10;     // False, Object and Number
-    Number(10) === 10;         // True, Number and Number
-    new Number(10) + 0 === 10; // True, due to implicit conversion
+    new Number(10) === 10;     // false, Object e Number
+    Number(10) === 10;         // true, Number e Number
+    new Number(10) + 0 === 10; // true, a causa della conversione implicita
 
-Using a built-in type like `Number` as a constructor will create a new `Number` 
-object, but leaving out the `new` keyword will make the `Number` function behave
-like a converter.
+Usare un tipo predefinito come `Number` nel ruolo di costruttore porta alla creazione di un nuovo oggetto `Number`, ma quando si omette la parola chiave `new` la funzione `Number` si comporta come un convertitore.
 
-In addition, passing literals or non-object values will result in even more
-type coercion.
+In più, passare letterali o valori che non siano oggetti risulterà in altre conversioni forzate di tipo.
 
-The best option is to cast to one of the three possible types **explicitly**.
+L'opzione migliore consiste nell'effettuare la conversione a uno di tre possibili tipi **in modo esplicito**.
 
-### Casting to a String
+### Conversione in stringa
 
     '' + 10 === '10'; // true
 
-By prepending an empty string, a value can easily be cast to a string.
+Aggiungendo in testa una stringa vuota, un valore può facilmente essere convertito in stringa.
 
-### Casting to a Number
+### Conversione in numero
 
     +'10' === 10; // true
 
-Using the **unary** plus operator, it is possible to cast to a number.
+Usando l'operatore unario `+` è possibile convertire in un numero.
 
-### Casting to a Boolean
+### Conversione in boolean
 
-By using the **not** operator twice, a value can be converted a boolean.
+Usando l'operatore **not** due volte consecutive è possibile convertire un valore in boolean
 
     !!'foo';   // true
     !!'';      // false
