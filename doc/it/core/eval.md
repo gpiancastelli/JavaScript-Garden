@@ -1,6 +1,6 @@
-## Why Not to Use `eval`
+## Perché evitare `eval`
 
-The `eval` function will execute a string of JavaScript code in the local scope.
+La funzione `eval` eseguirà una stringa di codice JavaScript nell'ambito locale.
 
     var foo = 1;
     function test() {
@@ -11,8 +11,7 @@ The `eval` function will execute a string of JavaScript code in the local scope.
     test(); // 3
     foo; // 1
 
-However, `eval` only executes in the local scope when it is being called
-directly *and* when the name of the called function is actually `eval`.
+Tuttavia, `eval` esegue il codice nell'ambito locale solo quando viene invocato direttamente *e* quando il nome della funzione invocata è effettivamente `eval`.
 
     var foo = 1;
     function test() {
@@ -24,24 +23,16 @@ directly *and* when the name of the called function is actually `eval`.
     test(); // 2
     foo; // 3
 
-The use of `eval` should be avoided. 99.9% of its "uses" can be achieved
-**without** it.
+L'uso di `eval` dovrebbe essere evitato. Il 99,9% dei suoi "usi" può essere realizzato **senza** di esso.
     
-### `eval` in Disguise
+### `eval` sotto mentite spoglie
 
-The [timeout functions](#other.timeouts) `setTimeout` and `setInterval` can both 
-take a string as their first argument. This string will **always** get executed 
-in the global scope since `eval` is not being called directly in that case.
+Le [funzioni di timeout](#other.timeouts) `setTimeout` and `setInterval` possono accettare entrambe una stringa come primo argomento. Questa stringa verrà **sempre** eseguita nell'ambito globale dato che in questo caso `eval` non viene invocato direttamente.
 
-### Security Issues
+### Problemi di sicurezza
 
-`eval` also is a security problem, because it executes **any** code given to it.
-It should **never** be used with strings of unknown or untrusted origins.
+L'uso di `eval` pone anche un problema di sicurezza, poiché esegue **qualsiasi** codice gli venga passato. Non dovrebbe **mai** essere usato con stringhe di origine ignota o inaffidabile.
 
-### In Conclusion
+### Conclusione
 
-`eval` should never be used. Any code that makes use of it should be questioned
-in its workings, performance and security. If something requires `eval` in
-order to work, it should **not** be used in the first place.  A *better design*
-should be used, that does not require the use of `eval`.
-
+La funzione `eval` non dovrebbe mai essere usata. Qualsiasi programma che ne faccia uso dovrebbe essere esaminato sotto diversi aspetti, dal funzionamento alle prestazioni e alla sicurezza. Se qualcosa richiede `eval` per funzionare, **non** dovrebbe neanche essere usata: una *progettazione migliore* che non richiede l'uso di `eval` dovrebbe essere impiegata.

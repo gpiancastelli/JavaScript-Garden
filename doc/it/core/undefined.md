@@ -1,54 +1,42 @@
-## `undefined` and `null`
+## `undefined` e `null`
 
-JavaScript has two distinct values for nothing, `null` and `undefined`, with
-the latter being more useful.
+JavaScript possiede due valori distinti per esprimere la mancanza di un valore: `null` e `undefined`, di cui il secondo è quello più utile.
 
-### The Value `undefined`
+### Il valore `undefined`
 
-`undefined` is a type with exactly one value: `undefined`.
+`undefined` è un tipo con esattamente un valore: `undefined`.
 
-The language also defines a global variable that has the value of `undefined`;
-this variable is also called `undefined`. However, this variable is **neither** a constant
-nor a keyword of the language. This means that its *value* can be easily 
-overwritten.
+Il linguaggio definisce anche una variabile globale che ha il valore `undefined`; anche questa variabile è chiamata `undefined`. Tuttavia, questa variabile non è *né* una costante né una parola chiave del linguaggio. Questo significa che il suo *valore* può facilmente essere sovrascritto.
 
-> **ES5 Note:** `undefined` in ECMAScript 5 is **no longer** *writable* in strict
-> mode, but its name can still be shadowed by for example a function with the name 
-> `undefined`.
+> **Nota su ES5:** `undefined` in ECMAScript 5 **non è più** *modificabile* in modalità strict, ma il suo nome può ancora essere nascosto, per esempio da una funzione con il nome `undefined`.
 
-Here are some examples of when the value `undefined` is returned:
+Il valore `undefined` viene restituito nei seguenti casi:
 
- - Accessing the (unmodified) global variable `undefined`.
- - Accessing a declared *but not* yet initialized variable.
- - Implicit returns of functions due to missing `return` statements.
- - `return` statements that do not explicitly return anything.
- - Lookups of non-existent properties.
- - Function parameters that do not have any explicit value passed.
- - Anything that has been set to the value of `undefined`.
- - Any expression in the form of `void(expression)`
+ - accesso alla variabile globale `undefined` (se il suo valore non è stato modificato);
+ - accesso a una variabile dichiarata *ma non* ancora inizializzata;
+ - valore di ritorno implicito per le funzioni che non hanno istruzioni `return`;
+ - valore di ritorno per istruzioni `return` che non restituiscono esplicitamente un valore;
+ - risultato della ricerca di proprietà inesistenti;
+ - parametri di funzione a cui non è stato esplicitamente passato un valore;
+ - qualsiasi cosa a cui sia stato assegnato il valore `undefined`;
+ - qualsiasi espressione della forma `void(expression)`.
 
-### Handling Changes to the Value of `undefined`
+### Gestire cambiamenti al valore di `undefined`
 
-Since the global variable `undefined` only holds a copy of the actual *value* of 
-`undefined`, assigning a new value to it does **not** change the value of the 
-*type* `undefined`.
+Dato che la variabile globale `undefined` mantiene solamente una copia del *valore* effettivo di `undefined`, assegnarle un nuovo valore **non** modifica il valore del *tipo* `undefined`.
 
-Still, in order to compare something against the value of `undefined`, it is
-necessary to retrieve the value of `undefined` first.
+Tuttavia, per confrontare un valore con il valore di `undefined`, è necessario prima ottenere il valore di `undefined`.
 
-To protect code against a possible overwritten `undefined` variable, a common
-technique used is to add an additional parameter to an [anonymous
-wrapper](#function.scopes) that gets no argument passed to it.
+Per proteggere il codice contro la possibilità di sovrascrittura della variabile `undefined`, una tecnica comunemente usata prevede di aggiungere un parametro a una [funzione involucro anonima](#function.scopes) a cui non viene assegnato alcun argomento.
 
     var undefined = 123;
     (function(something, foo, undefined) {
-        // undefined in the local scope does 
-        // now again refer to the value `undefined`
+        // undefined nell'ambito locale fa nuovamente
+        // riferimento al valore `undefined`
 
     })('Hello World', 42);
 
-Another way to achieve the same effect would be to use a declaration inside the 
-wrapper.
+Un altro modo di ottenere lo stesso effetto sarebbe quello di usare una dichiarazione all'interno della funzione.
 
     var undefined = 123;
     (function(something, foo) {
@@ -57,18 +45,10 @@ wrapper.
 
     })('Hello World', 42);
 
-The only difference here is that this version results in 4 more bytes being
-used in case it is minified, and there is no other `var` statement inside the
-anonymous wrapper.
+L'unica differenza è che questa versione risulta più lunga di 4 byte nel caso venga minificata, e che non c'è nessun'altra istruzione `var` all'interno della funzione involucro anonima.
 
-### Uses of `null`
+### Usi di `null`
 
-While `undefined` in the context of the JavaScript language is mostly used in
-the sense of a traditional *null*, the actual `null` (both a literal and a type)
-is more or less just another data type.
+Mentre `undefined` nel contesto del linguaggio JavaScript viene soprattutto usato nel senso del tradizionale *null*, l'effettivo `null` (sia come letterale che come tipo) è più o meno semplicemente un altro tipo di dato.
 
-It is used in some JavaScript internals (like declaring the end of the
-prototype chain by setting `Foo.prototype = null`), but in almost all cases, it
-can be replaced by `undefined`.
-
-
+Viene usato internamente da JavaScript in alcuni casi (come la dichiarazione della termine della catena dei prototipi, che si indica impostando `Foo.prototype = null`), ma in quasi tutti i casi può essere rimpiazzato da `undefined`.

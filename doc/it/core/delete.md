@@ -1,36 +1,36 @@
-## The `delete` Operator
+## L'operatore `delete`
 
-In short, it's *impossible* to delete global variables, functions and some other
-stuff in JavaScript which have a `DontDelete` attribute set.
+In breve, è *impossibile* eliminare variabili globali, funzioni, e tutto quello che in JavaScript ha un attributo `DontDelete` definito.
 
-### Global code and Function code
+### Codice globale e codice di funzione
 
-When a variable or a function is defined in a global or a [function
-scope](#function.scopes) it is a property of either the Activation object or
+Quando una variabile o una funzione viene definita nell'ambito globale o in un [ambito di funzione](#function.scopes) diventa una proprietà dell'oggetto globale o dell'oggetto Activation. Tali proprietà possiedono un insieme di attributi, uno dei quali si chiama `DontDelete`. Dichiarazioni di variabili e di funzioni nell'ambito globale o in un ambito di funzione creano sempre proprietà con un attributo `DontDelete`, e quindi non possono essere cancellate.
+
+it is a property of either the Activation object or
 the Global object. Such properties have a set of attributes, one of which is
 `DontDelete`. Variable and function declarations in global and function code
 always create properties with `DontDelete`, and therefore cannot be deleted.
 
-    // global variable:
-    var a = 1; // DontDelete is set
+    // variabile globale:
+    var a = 1; // DontDelete è definito
     delete a; // false
     a; // 1
 
-    // normal function:
-    function f() {} // DontDelete is set
+    // funzione normale:
+    function f() {} // DontDelete è definito
     delete f; // false
     typeof f; // "function"
 
-    // reassigning doesn't help:
+    // il riassegnamento non aiuta:
     f = 1;
     delete f; // false
     f; // 1
 
-### Explicit properties
+### Proprietà esplicite
 
-Explicitly set properties can be deleted normally.
+Proprietà impostate esplicitamente possono essere cancellate normalmente.
 
-    // explicitly set property:
+    // proprietà esplicitamente impostata:
     var obj = {x: 1};
     obj.y = 2;
     delete obj.x; // true
@@ -38,28 +38,24 @@ Explicitly set properties can be deleted normally.
     obj.x; // undefined
     obj.y; // undefined
 
-In the example above, `obj.x` and `obj.y` can be deleted because they have no 
-`DontDelete` atribute. That's why the example below works too.
+In questo esempio `obj.x` e `obj.y` possono essere cancellate perché non possiedono alcun attributo `DontDelete`. Questo è anche il motivo per cui il prossimo esempio funziona.
 
-    // this works fine, except for IE:
+    // questo funziona bene, tranne che su IE:
     var GLOBAL_OBJECT = this;
     GLOBAL_OBJECT.a = 1;
-    a === GLOBAL_OBJECT.a; // true - just a global var
+    a === GLOBAL_OBJECT.a; // true - semplicemente una variabile globale
     delete GLOBAL_OBJECT.a; // true
     GLOBAL_OBJECT.a; // undefined
 
-Here we use a trick to delete `a`. [`this`](#function.this) here refers 
-to the Global object and we explicitly declare variable `a` as its property 
-which allows us to delete it.
+Qui usiamo un trucco per cancellare `a`. [`this`](#function.this) qui si riferisce all'oggetto globale, e noi dichiariamo esplicitamente una variabile `a` come sua proprietà, cosa che ci consente di cancellarla.
 
-IE (at least 6-8) has some bugs, so the code above doesn't work.
+IE (almeno nelle versioni tra la 6 e la 8) contiene alcuni difetti che impediscono a questo codice di funzionare correttamente.
 
-### Function arguments and built-ins
+### Argomenti di funzione e proprietà predefinite
 
-Functions' normal arguments, [`arguments` objects](#function.arguments) 
-and built-in properties also have `DontDelete` set.
+Anche i normali argomenti di funzione, l'[oggetto `arguments`](#function.arguments) e le proprietà predefinite possiedono un attributo `DontDelete`.
 
-    // function arguments and properties:
+    // argomenti di funzione e proprietà:
     (function (x) {
     
       delete arguments; // false
@@ -74,12 +70,10 @@ and built-in properties also have `DontDelete` set.
       
     })(1);
 
-### Host objects
-    
-The behaviour of `delete` operator can be unpredictable for hosted objects. Due
-to the specification, host objects are allowed to implement any kind of behavior. 
+### Oggetti dell'ambiente ospite
 
-### In conclusion
+Il comportamento dell'operatore `delete` può essere imprevedibile per gli oggetti dell'ambiente ospite. Secondo la specifica, a tali oggetti è consentito implementare qualsiasi tipo di comportamento.
 
-The `delete` operator often has unexpected behaviour and can only be safely
-used to delete explicitly set properties on normal objects.
+### Conclusione
+
+L'operatore `delete` ha spesso un comportamento inaspettato e può essere usato tranquillamente solo per cancellare esplicitamente le proprietà impostate su oggetti normali.

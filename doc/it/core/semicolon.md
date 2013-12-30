@@ -1,42 +1,36 @@
-## Automatic Semicolon Insertion
+## Inserimento automatico dei punti e virgola
 
-Although JavaScript has C style syntax, it does **not** enforce the use of
-semicolons in the source code, so it is possible to omit them.
+Sebbene JavaScript possegga una sintassi nello stile del linguaggio C, **non** impone l'utilizzo dei punti e virgola nel codice sorgente, quindi è possibile ometterli.
 
-JavaScript is not a semicolon-less language. In fact, it needs the 
-semicolons in order to understand the source code. Therefore, the JavaScript
-parser **automatically** inserts them whenever it encounters a parse
-error due to a missing semicolon.
+JavaScript non è un linguaggio privo di punti e virgola. Infatti, ha bisogno dei punti e virgola allo scopo di capire il codice sorgente. Quindi, il riconoscitore del linguaggio JavaScript li inserisce **automaticamente** ogni volta che incontra un errore di riconoscimento dovuto a un punto e virgola mancante.
 
     var foo = function() {
-    } // parse error, semicolon expected
+    } // errore di riconoscimento, previsto un punto e virgola
     test()
 
-Insertion happens, and the parser tries again.
+L'inserimento avviene, e il riconoscitore riprova.
 
     var foo = function() {
-    }; // no error, parser continues
+    }; // nessun errore, il riconoscitore prosegue
     test()
 
-The automatic insertion of semicolon is considered to be one of **biggest**
-design flaws in the language because it *can* change the behavior of code.
+L'inserimento automatico dei punti e virgola viene considerato come uno dei **più grandi** difetti di progettazione del linguaggio perché *può* cambiare il comportamento del codice
 
-### How it Works
+### Come funziona
 
-The code below has no semicolons in it, so it is up to the parser to decide where
-to insert them.
+Il codice seguente non ha punti e virgola, quindi tocca al riconoscitore decidere dove inserirli.
 
     (function(window, undefined) {
         function test(options) {
-            log('testing!')
+            log('collaudo!')
 
             (options.list || []).forEach(function(i) {
 
             })
 
             options.value.test(
-                'long string to pass here',
-                'and another long string to pass'
+                'ecco una lunga stringa da passare',
+                'e una seconda lunga stringa da passare'
             )
 
             return
@@ -53,62 +47,55 @@ to insert them.
 
     })(window)
 
-Below is the result of the parser's "guessing" game.
+Di seguito viene riportato il risultato delle congetture del riconoscitore.
 
     (function(window, undefined) {
         function test(options) {
 
-            // Not inserted, lines got merged
-            log('testing!')(options.list || []).forEach(function(i) {
+            // nessun punto e virgola inserito,
+            // le righe sono state unite
+            log('collaudo!')(options.list || []).forEach(function(i) {
 
-            }); // <- inserted
+            }); // <- inserito
 
             options.value.test(
-                'long string to pass here',
-                'and another long string to pass'
-            ); // <- inserted
+                'ecco una lunga stringa da passare',
+                'e una seconda lunga stringa da passare'
+            ); // <- inserito
 
-            return; // <- inserted, breaks the return statement
-            { // treated as a block
+            return; // <- inserito, spezza l'istruzione di ritorno
+            { // trattato come un blocco
 
-                // a label and a single expression statement
+                // una etichetta e una istruzione composta
+                // da una singola espressione
                 foo: function() {} 
-            }; // <- inserted
+            }; // <- inserito
         }
-        window.test = test; // <- inserted
+        window.test = test; // <- inserito
 
-    // The lines got merged again
+    // le righe sono state unite di nuovo
     })(window)(function(window) {
-        window.someLibrary = {}; // <- inserted
+        window.someLibrary = {}; // <- inserito
 
-    })(window); //<- inserted
+    })(window); //<- inserito
 
-> **Note:** The JavaScript parser does not "correctly" handle return statements 
-> that are followed by a new line. While this is not neccessarily the fault of 
-> the automatic semicolon insertion, it can still be an unwanted side-effect. 
+> **Nota:** Il riconoscitore del linguaggio JavaScript non gestisce "correttamente" le istruzioni `return` che sono seguite da un carattere di nuova riga. Nonostante questo non sia necessariamente colpa dell'inserimento automatico dei punti e virgola, può comunque essere un effetto collaterale indesiderato.
 
-The parser drastically changed the behavior of the code above. In certain cases,
-it does the **wrong thing**.
+Il riconoscitore ha modificato drasticamente il comportamento del codice. In alcuni casi, fa la **cosa sbagliata**.
 
-### Leading Parenthesis
+### Parentesi iniziali
 
-In case of a leading parenthesis, the parser will **not** insert a semicolon.
+Nei casi di una parentesi iniziale, il riconoscitore **non** inserirà un punto e virgola.
 
-    log('testing!')
+    log('collaudo!')
     (options.list || []).forEach(function(i) {})
 
-This code gets transformed into one line.
+Questo codice viene trasformato in una sola riga.
 
-    log('testing!')(options.list || []).forEach(function(i) {})
+    log('collaudo!')(options.list || []).forEach(function(i) {})
 
-Chances are **very** high that `log` does **not** return a function; therefore,
-the above will yield a `TypeError` stating that `undefined is not a function`.
+Le probabilità che `log` **non** restituisca una funzione sono **molto** alte; quindi, la riga precedente produrrà un errore di tipo `TypeError` lamentandosi del fatto che `undefined` non è una funzione.
 
-### In Conclusion
+### Conclusione
 
-It is highly recommended to **never** omit semicolons. It is also recommended
-that braces be kept on the same line as their corresponding statements and to
-never omit them for single-line `if` / `else` statements. These measures will
-not only improve the consistency of the code, but they will also prevent the
-JavaScript parser from changing code behavior.
-
+Si raccomanda caldamente di non omettere **mai** i punti e virgola. Si raccomanda caldamente anche di mantenere le parentesi sulla stessa riga delle istruzioni corrispondenti e di non ometterle mai per le istruzioni `if`/`else` i cui blocchi contengano una sola riga. Questi provvedimenti non solo miglioreranno la coerenza del codice, ma evitaranno che il riconoscitore del linguaggio modifichi il comportamento del codice.
