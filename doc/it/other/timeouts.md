@@ -1,167 +1,124 @@
-### `setTimeout` and `setInterval`
+### `setTimeout` e `setInterval`
 
-Since JavaScript is asynchronous, it is possible to schedule the execution of a 
-function using the `setTimeout` and `setInterval` functions.
+Dato che JavaScript è asincrono, è possibile programmare l'esecuzione di una funzione usando le funzioni `setTimeout` e `setInterval`.
 
-> **Note:** Timeouts are **not** part of the ECMAScript Standard. They are
-> implemented as part of the [DOM][1].
+> **Nota:** I timeout **non** sono parte dello standard ECMAScript. Sono implementati come parte del [DOM][1].
 
     function foo() {}
-    var id = setTimeout(foo, 1000); // returns a Number > 0
+    var id = setTimeout(foo, 1000); // restituisce una istanza di Number > 0
 
-When `setTimeout` is called, it returns the ID of the timeout and schedule
-`foo` to run **approximately** one thousand milliseconds in the future. 
-`foo` will then be executed **once**.
+Quando `setTimeout` viene invocata, restituisce l'ID del timeout e programma l'esecuzione di `foo` **approssimativamente** mille millisecondi nel futuro. La funzione `foo` verrà quindi eseguita **una sola volta**.
 
-Depending on the timer resolution of the JavaScript engine running the code, as
-well as the fact that JavaScript is single threaded and other code that gets
-executed might block the thread, it is by **no means** a safe bet that one will
-get the exact delay specified in the `setTimeout` call.
+A seconda della risoluzione del timer nel motore JavaScript che esegue il codice, e del fatto che JavaScript viene eseguito in un singolo thread e altro codice che viene eseguito potrebbe bloccare il thread, **non è assolutamente** sicuro che la funzione verrà eseguita con l'esatto ritardo specificato nella invocazione di `setTimeout`.
 
-The function that was passed as the first parameter will get called by the
-*global object*, which means that [`this`](#function.this) inside the called function 
-refers to the global object.
+La funzione che viene passata come primo parametro verrà invocata dall'*oggetto globale*, e questo significa che [`this`](#function.this) all'interno della funzione invocata fa riferimento all'oggetto globale.
 
     function Foo() {
         this.value = 42;
         this.method = function() {
-            // this refers to the global object
-            console.log(this.value); // will log undefined
+            // this fa riferimento all'oggetto globale
+            console.log(this.value); // stamperà undefined
         };
         setTimeout(this.method, 500);
     }
     new Foo();
 
 
-> **Note:** As `setTimeout` takes a **function object** as its first parameter, an
-> common mistake is to use `setTimeout(foo(), 1000)`, which will use the 
-> **return value** of the call `foo` and **not** `foo`. This is, most of the time, 
-> a silent error, since when the function returns `undefined` `setTimeout` will 
-> **not** raise any error.
+> **Nota:** Dato che `setTimeout` accetta un **oggetto funzione** come primo parametro, un errore comune è invocarla come `setTimeout(foo(), 1000)`, che userà il **valore di ritorno** della invocazione di `foo` anziché la funzione `foo`. La maggior parte delle volte questo è un errore che passerà sotto silenzio, dato che quando la funzione restituisce `undefined` `setTimeout` **non** solleverà alcun errore.
 
-### Stacking Calls with `setInterval`
+### Impilare invocazioni con `setInterval`
 
-While `setTimeout` only runs the function once, `setInterval` - as the name 
-suggests - will execute the function **every** `X` milliseconds, but its use is 
-discouraged. 
+Mentre `setTimeout` esegue la funzione una sola volta, `setInterval` - come suggerisce il suo nome - eseguirà la funzione **ogni** `X` millisecondi, ma il suo uso è sconsigliato.
 
-When code that is being executed blocks the timeout call, `setInterval` will 
-still issue more calls to the specified function. This can, especially with small
-intervals, result in function calls stacking up.
+Quando il codice che si trova in esecuzione blocca l'invocazione del timeout, `setInterval` continua comunque a innescare invocazioni alla funzione specificata. Questo può, specialmente per piccoli intervalli, risultare in una impilazione di invocazioni di funzione.
 
-    function foo(){
-        // something that blocks for 1 second
+    function foo() {
+        // qualche operazione bloccante che dura 1 secondo
     }
     setInterval(foo, 1000);
 
-In the above code, `foo` will get called once and will then block for one second.
+In questo esempio, `foo` verrà invocata una volta e poi si bloccherà per un secondo.
 
-While `foo` blocks the code, `setInterval` will still schedule further calls to
-it. Now, when `foo` has finished, there will already be **ten** further calls to
-it waiting for execution.
+Mentre `foo` blocca il codice, `setInterval` continuerà a programmare ulteriori invocazioni alla funzione. Ora, quando `foo` è terminata, ci saranno già **dieci** invocazioni aggiuntive in attesa di essere eseguite.
 
-### Dealing with Possible Blocking Code
+### Gestire codice potenzialmente bloccante
 
-The easiest solution, as well as most controllable solution, is to use `setTimeout` within
-the function itself.
+La soluzione più facile, e la più controllabile, è usare `setTimeout` all'interno della funzione stessa.
 
-    function foo(){
-        // something that blocks for 1 second
+    function foo() {
+        // qualche operazione bloccante che dura 1 secondo
         setTimeout(foo, 1000);
     }
     foo();
 
-Not only does this encapsulate the `setTimeout` call, but it also prevents the
-stacking of calls and gives additional control. `foo` itself can now decide 
-whether it wants to run again or not.
+Questa soluzione non solo incapsula l'invocazione di `setTimeout`, ma evita la formazione di una pila di invocazioni e fornisce un controllo aggiutivo: ora è `foo` stessa che può decidere se vuole essere eseguita di nuovo oppure no.
 
-### Manually Clearing Timeouts
+### Cancellare manualmente i timeout
 
-Clearing timeouts and intervals works by passing the respective ID to
-`clearTimeout` or `clearInterval`, depending on which `set` function was used
-in the first place.
+Per cancellare i timeout e gli intervalli si passano i rispettivi ID a `clearTimeout` o `clearInterval`, a seconda di quale funzione di impostazione è stata precedentemente usata.
 
     var id = setTimeout(foo, 1000);
     clearTimeout(id);
 
-### Clearing All Timeouts
+### Cancellare tutti i timeout
 
-As there is no built-in method for clearing all timeouts and/or intervals, 
-it is necessary to use brute force in order to achieve this functionality.
+Non essendoci alcun metodo predefinito per cancellare tutti i timeout e/o gli intervalli è necessario usare la forza bruta per ottenere questa funzionalità.
 
-    // clear "all" timeouts
-    for(var i = 1; i < 1000; i++) {
+    // cancella "tutti" i timeout
+    for (var i = 1; i < 1000; i++) {
         clearTimeout(i);
     }
 
-But there might still be timeouts that are unaffected by this arbitrary number.
-Another way of doing this is to consider that the ID given to a timeout is
-incremented by one every time you call `setTimeout`.
+Ma potrebbero ancora esserci timeout che non sono influenzati da questo numero arbitrario. Un altro modo di fare questo è considerare che l'ID dato a un timeout viene incrementato di uno ogni volta che si invoca `setTimeout`.
 
-    // clear "all" timeouts
-    var biggestTimeoutId = window.setTimeout(function(){}, 1),
-    i;
-    for(i = 1; i <= biggestTimeoutId; i++) {
+    // cancella "tutti" i timeout
+    var biggestTimeoutId = window.setTimeout(function() {}, 1),
+        i;
+    for (i = 1; i <= biggestTimeoutId; i++) {
         clearTimeout(i);
     }
 
-Even though this works on all major browsers today, it isn't specified that
-the IDs should be ordered that way and it may change. Therefore, it is instead
-recommended to keep track of all the timeout IDs, so they can be cleared
-specifically.
+Anche se questo esempio funziona su tutti i browser odierni più importanti, non è specificato che gli ID debbano essere ordinati in questo modo, e potrebbe cambiare. Quindi, si raccomanda piuttosto di tenere traccia di tutti gli ID di timeout in modo da poterli cancellare specificatamente.
 
-### Hidden Use of `eval`
+### Uso nascosto di `eval`
 
-`setTimeout` and `setInterval` can also take a string as their first parameter.
-This feature should **never** be used because it internally makes use of `eval`.
+`setTimeout` e `setInterval` possono anche accettare una stringa come primo parametro. Questa caratteristica non dovrebbe **mai** essere usata perché fa internamente uso di `eval`.
 
-> **Note:** Since the timeout functions are **not** specified by the ECMAScript
-> standard, the exact workings when a string is passed to them might differ in
-> various JavaScript implementations. For example, Microsoft's JScript uses
-> the `Function` constructor in place of `eval`.
+> **Nota:** Dato che le funzioni di timeout **non** sono specificate dallo standard ECMAScript, l'esatto funzionamento quando una stringa viene passata come primo argomento potrebbe essere diverso nelle varie implementazioni di JavaScript. Per esempio, JScript di Microsoft usa il costruttore `Function` al posto di `eval`.
 
     function foo() {
-        // will get called
+        // verrà invocata
     }
 
     function bar() {
         function foo() {
-            // never gets called
+            // non verrà mai invocata
         }
         setTimeout('foo()', 1000);
     }
     bar();
 
-Since `eval` is not getting called [directly](#core.eval) in this case, the string 
-passed to `setTimeout` will be executed in the *global scope*; thus, it will 
-not use the local variable `foo` from the scope of `bar`.
+Dato che in questo caso `eval` non viene invocata [direttamente](#core.eval), la string passata a `setTimeout` verrà eseguita nell'*ambito globale*; quindi non userà la variabile locale `foo` contenuta nell'ambito di `bar`.
 
-It is further recommended to **not** use a string to pass arguments to the
-function that will get called by either of the timeout functions. 
+Si raccomanda inoltre di **non** usare una stringa per passare argomenti alla funzione che verrà invocata da una qualsiasi delle due funzioni di timeout.
 
     function foo(a, b, c) {}
     
-    // NEVER use this
+    // non usare MAI questo
     setTimeout('foo(1, 2, 3)', 1000)
 
-    // Instead use an anonymous function
+    // si usi invece una funzione anonima
     setTimeout(function() {
         foo(a, b, c);
     }, 1000)
 
-> **Note:** While it is also possible to use the syntax 
-> `setTimeout(foo, 1000, a, b, c)`, it is not recommended, as its use may lead
-> to subtle errors when used with [methods](#function.this). 
+> **Nota:** Sebbene sia anche possibile usare la forma `setTimeout(foo, 1000, a, b, c)`, essa è sconsigliata in quanto potrebbe portare a sofisticati errori quando usata con i [metodi](#function.this).
 
-### In Conclusion
+### Conclusione
 
-A string should **never** be used as the parameter of `setTimeout` or 
-`setInterval`. It is a clear sign of **really** bad code, when arguments need 
-to be supplied to the function that gets called. An *anonymous function* should
-be passed that then takes care of the actual call.
+Una stringa non dovrebbe **mai** essere usata come parametro di `setTimeout` o `setInterval`. È un chiaro segno di qualità **veramente** bassa del codice quando argomenti devono essere passati alla funzione che viene invocata. Dovrebbe essere passata una *funzione anonima* che si prenda cura della reale invocazione.
 
-Furthermore, the use of `setInterval` should be avoided because its scheduler is not
-blocked by executing JavaScript.
+Inoltre, l'uso di `setInterval` dovrebbe essere evitato perché il suo meccanismo di programmazione delle invocazini non viene bloccato dal codice JavaScript in esecuzione.
 
 [1]: http://en.wikipedia.org/wiki/Document_Object_Model "Document Object Model"
 

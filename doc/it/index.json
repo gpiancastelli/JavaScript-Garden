@@ -1,15 +1,15 @@
 {
     "title": "JavaScript Garden",
-    "langTitle": "JavaScript Garden in English",
-    "description": "A Guide to JavaScript's Quirks and Flaws.",
+    "langTitle": "JavaScript Garden in italiano",
+    "description": "Una guide alle eccentricità e ai difetti di JavaScript.",
     "sections": [
         {
-            "title": "Intro",
+            "title": "Introduzione",
             "dir": "intro",
             "articles": ["index"]
         },
         {
-            "title": "Objects",
+            "title": "Oggetti",
             "dir": "object",
             "articles": [
                 "general",
@@ -19,7 +19,7 @@
             ]
         },
         {
-            "title": "Functions",
+            "title": "Funzioni",
             "dir": "function",
             "articles": [
                 "general",
@@ -31,7 +31,7 @@
             ]
         },
         {
-            "title": "Arrays",
+            "title": "Array",
             "dir": "array",
             "articles": [
                 "general",
@@ -39,7 +39,7 @@
             ]
         },
         {
-            "title": "Types",
+            "title": "Tipi",
             "dir": "types",
             "articles": [
                 "equality",
@@ -49,7 +49,7 @@
             ]
         },
         {
-            "title": "Core",
+            "title": "Funzionalità di base",
             "dir": "core",
             "articles": [
                 "eval",
@@ -59,7 +59,7 @@
             ]
         },
         {
-            "title": "Other",
+            "title": "Altro",
             "dir": "other",
             "articles": [
                 "timeouts"
